@@ -4,11 +4,13 @@ Simple Flask Web Application
 A basic web application with health checks, logging, and basic functionality
 """
 
-from flask import Flask, jsonify, request, render_template_string
+
 import logging
 import os
 import sys
 from datetime import datetime
+
+from flask import Flask, jsonify, request, render_template_string
 
 # Configure logging
 logging.basicConfig(
