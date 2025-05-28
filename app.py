@@ -4,7 +4,6 @@ Simple Flask Web Application
 A basic web application with health checks, logging, and basic functionality
 """
 
-
 import logging
 import os
 import sys
@@ -106,11 +105,17 @@ def metrics():
 def echo():
     """Echo endpoint for testing POST requests"""
     logger.info("Echo endpoint accessed")
-    data = request.get_json() or {}
+    try:
+        data = request.get_json(silent=True) or {}
+    except Exception as e:
+        logger.warning(f"Error parsing JSON: {e}")
+        data = {}
+    
     return jsonify({
         'received': data,
         'timestamp': datetime.now().isoformat(),
-        'method': request.method
+        'method': request.method,
+        'content_type': request.content_type or 'not specified'
     })
 
 def get_app_version():
