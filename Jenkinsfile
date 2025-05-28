@@ -47,7 +47,8 @@ pipeline {
             steps {
                 script {
                     echo "🔄 Checking out source code..."
-                    checkout scm
+                    // checkout scm
+                    checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GIT_CICD_SVC', url: 'git@github.com:devopsstudygroupadmin/simple-python-webapp.git']])
                     
                     // Get additional git information
                     env.GIT_COMMIT_FULL = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
