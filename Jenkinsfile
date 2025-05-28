@@ -6,6 +6,7 @@ pipeline {
         label 'linux'  // Use Linux worker nodes
     }
     */
+    agent any
     environment {
         // Application settings
         APP_NAME = 'simple-python-webapp'
