@@ -4,8 +4,8 @@ Unit tests for the Flask web application
 """
 
 import json
-import sys
 import os
+import sys
 
 import pytest
 
@@ -76,12 +76,22 @@ class TestFlaskApp:
     def test_echo_endpoint_empty(self, client):
         """Test the echo endpoint with empty data"""
         response = client.post('/api/echo', 
-                             data='',
+                             data=json.dumps({}),
                              content_type='application/json')
         
         assert response.status_code == 200
         data = json.loads(response.data)
         assert data['received'] == {}
+        assert data['method'] == 'POST'
+    
+    def test_echo_endpoint_no_content_type(self, client):
+        """Test the echo endpoint without JSON content type"""
+        response = client.post('/api/echo', data='test data')
+        
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data['received'] == {}  # Should default to empty dict
+        assert data['method'] == 'POST'
 
 class TestUtilityFunctions:
     """Test cases for utility functions"""
