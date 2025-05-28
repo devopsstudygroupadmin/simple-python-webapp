@@ -27,7 +27,7 @@ pipeline {
         
         // Build settings
         BUILD_DATE = sh(script: "date -u +'%Y-%m-%dT%H:%M:%SZ'", returnStdout: true).trim()
-        GIT_COMMIT_SHORT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+        // GIT_COMMIT_SHORT = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
         
         // Image naming
         IMAGE_NAME = "${NEXUS_REGISTRY}/${NEXUS_REPO}/${APP_NAME}"
@@ -478,7 +478,7 @@ EOF
             }
         }
     }
-    
+    /*
     post {
         always {
             script {
@@ -529,4 +529,5 @@ EOF
             }
         }
     }
+    */
 }
