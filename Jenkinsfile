@@ -1,10 +1,11 @@
 #!/usr/bin/env groovy
 
 pipeline {
+    /*
     agent {
         label 'linux'  // Use Linux worker nodes
     }
-    
+    */
     environment {
         // Application settings
         APP_NAME = 'simple-python-webapp'
