@@ -3,10 +3,11 @@
 Unit tests for the Flask web application
 """
 
-import pytest
 import json
 import sys
 import os
+
+import pytest
 
 # Add the parent directory to the path to import the app
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
