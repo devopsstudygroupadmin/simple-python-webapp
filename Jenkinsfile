@@ -175,6 +175,7 @@ pipeline {
                         # Display coverage summary
                         coverage report
                     '''
+                    echo "Stage E: Unit Tests & Coverage - End"
                 }
             }
             post {
@@ -198,7 +199,7 @@ pipeline {
                     ])
                 }
             }
-            echo "Stage E: Unit Tests & Coverage - Start"
+            
         }
         
         stage('SonarQube Analysis') {
