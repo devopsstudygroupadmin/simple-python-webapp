@@ -46,6 +46,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
+                    echo "Stage A - Checkout Start"
                     echo "🔄 Checking out source code..."
                     // checkout scm
                     checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GIT_CICD_SVC', url: 'git@github.com:devopsstudygroupadmin/simple-python-webapp.git']])
@@ -62,6 +63,8 @@ pipeline {
                     echo "   - Git Commit: ${env.GIT_COMMIT_FULL}"
                     echo "   - Git Author: ${env.GIT_AUTHOR}"
                     echo "   - Build Date: ${BUILD_DATE}"
+
+                    echo "Stage A - Checkout End"
                 }
             }
         }
@@ -69,6 +72,7 @@ pipeline {
         stage('Setup Python Environment') {
             steps {
                 script {
+                    echo "Stage B: Setup Python Environment - Start"
                     echo "🐍 Setting up Python environment..."
                     sh '''
                         # Verify Python version
@@ -87,6 +91,7 @@ pipeline {
                         # List installed packages for verification
                         pip list
                     '''
+                    echo "Stage B: Setup Python Environment - End"
                 }
             }
         }
@@ -96,6 +101,7 @@ pipeline {
                 stage('Lint & Style Check') {
                     steps {
                         script {
+                            echo "Stage C: Lint & Style Check - Start"
                             echo "🔍 Running code quality checks..."
                             sh '''
                                 source venv/bin/activate
@@ -119,6 +125,7 @@ pipeline {
                                 echo "Checking code formatting..."
                                 black --check --diff app.py test_app.py || true
                             '''
+                            echo "Stage C: Lint & Style Check - End"
                         }
                     }
                 }
@@ -126,6 +133,7 @@ pipeline {
                 stage('Security Scan') {
                     steps {
                         script {
+                            echo "Stage D: Security Scan - Start"
                             echo "🔒 Running security scans..."
                             sh '''
                                 source venv/bin/activate
@@ -143,6 +151,7 @@ pipeline {
                                 safety check --json --output safety-report.json || true
                                 safety check || true
                             '''
+                            echo "Stage D: Security Scan - End"
                         }
                     }
                 }
@@ -152,6 +161,7 @@ pipeline {
         stage('Unit Tests & Coverage') {
             steps {
                 script {
+                    echo "Stage E: Unit Tests & Coverage - Start"
                     echo "🧪 Running unit tests and code coverage..."
                     sh '''
                         source venv/bin/activate
@@ -188,6 +198,7 @@ pipeline {
                     ])
                 }
             }
+            echo "Stage E: Unit Tests & Coverage - Start"
         }
         
         stage('SonarQube Analysis') {
