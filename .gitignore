@@ -87,10 +87,11 @@ secrets.yaml
 .sonar/
 .scannerwork/
 
-# Application specific
+# Code quality and formatting
 bandit-report.json
 safety-report.json
 pylint-report.txt
+.isort.cfg
 
 # Docker
 .dockerignore
