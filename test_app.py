@@ -72,6 +72,8 @@ class TestFlaskApp:
         data = json.loads(response.data)
         assert data['received'] == test_data
         assert data['method'] == 'POST'
+        assert 'timestamp' in data
+        assert 'content_type' in data
     
     def test_echo_endpoint_empty(self, client):
         """Test the echo endpoint with empty data"""
@@ -84,14 +86,17 @@ class TestFlaskApp:
         assert data['received'] == {}
         assert data['method'] == 'POST'
     
-    def test_echo_endpoint_no_content_type(self, client):
-        """Test the echo endpoint without JSON content type"""
-        response = client.post('/api/echo', data='test data')
+    def test_echo_endpoint_invalid_json(self, client):
+        """Test the echo endpoint with invalid JSON"""
+        response = client.post('/api/echo', 
+                             data='invalid json data',
+                             content_type='application/json')
         
         assert response.status_code == 200
         data = json.loads(response.data)
-        assert data['received'] == {}  # Should default to empty dict
+        assert data['received'] == {}  # Should fallback to empty dict
         assert data['method'] == 'POST'
+        assert data['content_type'] == 'application/json'
 
 class TestUtilityFunctions:
     """Test cases for utility functions"""
@@ -152,6 +157,40 @@ class TestErrorHandling:
         """Test method not allowed error"""
         response = client.post('/health')
         assert response.status_code == 405
+    
+    def test_echo_endpoint_get_method(self, client):
+        """Test that GET method is not allowed on echo endpoint"""
+        response = client.get('/api/echo')
+        assert response.status_code == 405
+
+class TestRobustness:
+    """Test cases for application robustness"""
+    
+    def test_large_payload_echo(self, client):
+        """Test echo endpoint with large payload"""
+        large_data = {'data': 'x' * 1000, 'numbers': list(range(100))}
+        response = client.post('/api/echo',
+                             data=json.dumps(large_data),
+                             content_type='application/json')
+        
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data['received'] == large_data
+    
+    def test_special_characters_echo(self, client):
+        """Test echo endpoint with special characters"""
+        special_data = {
+            'unicode': '🚀 Hello, 世界! 🌟',
+            'symbols': '!@#$%^&*()_+-=[]{}|;:,.<>?',
+            'quotes': 'He said "Hello" and she said \'Hi\''
+        }
+        response = client.post('/api/echo',
+                             data=json.dumps(special_data),
+                             content_type='application/json')
+        
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data['received'] == special_data
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
